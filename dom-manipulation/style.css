@@ -1,0 +1,19 @@
+// Simulate fetching from mock API every 30s
+setInterval(() => {
+  fetch("https://jsonplaceholder.typicode.com/posts/1") // Just simulating
+    .then(res => res.json())
+    .then(data => {
+      // Simulate server returning an additional quote
+      const serverQuote = {
+        text: `Server quote at ${new Date().toLocaleTimeString()}`,
+        category: "Server"
+      };
+      const exists = quotes.some(q => q.text === serverQuote.text);
+      if (!exists) {
+        quotes.push(serverQuote);
+        saveQuotes();
+        populateCategories();
+        alert("New quote synced from server.");
+      }
+    });
+}, 30000);
