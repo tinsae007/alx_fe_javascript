@@ -21,6 +21,7 @@ function displayRandomQuote() {
   quoteDisplay.textContent = `"${randomQuote.text}" — ${randomQuote.category}`;
 }
 
+
 // -----------------------------
 // Function: Add Quote Dynamically
 // -----------------------------
@@ -32,7 +33,7 @@ function addQuote() {
   const category = categoryInput.value.trim();
 
   if (!text || !category) {
-    alert("Please fill in both fields.");
+    alert("Please fill in both quote and category.");
     return;
   }
 
@@ -41,7 +42,7 @@ function addQuote() {
   textInput.value = "";
   categoryInput.value = "";
 
-  alert("New quote added successfully!");
+  alert("New quote added!");
 }
 
 // -----------------------------
