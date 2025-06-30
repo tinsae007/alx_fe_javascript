@@ -240,7 +240,7 @@ async function fetchQuotesFromServer() {
 }
 
 // Sync function
-async function syncWithServer() {
+async function syncQuotes() {
   const serverQuotes = await fetchQuotesFromServer();
   let updated = false;
 
