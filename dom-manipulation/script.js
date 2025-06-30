@@ -9,7 +9,7 @@ let quotes = [
 // -----------------------------
 // Function: Display Random Quote
 // -----------------------------
-function displayRandomQuote() {
+function showRandomQuote() {
   const quoteDisplay = document.getElementById("quoteDisplay");
 
   if (!quotes.length) {
