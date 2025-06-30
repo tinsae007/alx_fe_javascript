@@ -259,7 +259,7 @@ async function syncQuotes() {
     saveQuotes();
     populateCategories();
     filterQuotes();
-    notifyUser("Quotes synced from mock server. Server data has been prioritized.");
+    notifyUser("Quotes synced with server!");
   }
 }
 
