@@ -9,17 +9,18 @@ let quotes = [
 // -----------------------------
 // Function: Display Random Quote
 // -----------------------------
-function showRandomQuote() {
+function showRandomQuote () {
   const quoteDisplay = document.getElementById("quoteDisplay");
 
   if (!quotes.length) {
-    quoteDisplay.textContent = "No quotes available.";
+    quoteDisplay.textContent = "No quotes available."; // <-- textContent used, NOT innerHTML
     return;
   }
 
   const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
-  quoteDisplay.textContent = `"${randomQuote.text}" — ${randomQuote.category}`;
+  quoteDisplay.textContent = `"${randomQuote.text}" — ${randomQuote.category}`; // <-- textContent again
 }
+
 
 
 // -----------------------------
