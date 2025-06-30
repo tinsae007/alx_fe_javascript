@@ -220,7 +220,7 @@ function importFromJsonFile(event) {
 }
 
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
-const SERVER_URL = "https://mockapi.io/api/v1/quotes"; // Replace with your actual mock API endpoint
+const SERVER_URL = "https://jsonplaceholder.typicode.com/posts"; // Mock API endpoint
 
 // Sync interval (30 seconds)
 setInterval(syncWithServer, 30000);
@@ -250,10 +250,7 @@ async function syncWithServer() {
     );
 
     if (!existsLocally) {
-      quotes.push({
-        text: serverQuote.text,
-        category: serverQuote.category.toLowerCase()
-      });
+      quotes.push(serverQuote);
       updated = true;
     }
   });
@@ -262,9 +259,10 @@ async function syncWithServer() {
     saveQuotes();
     populateCategories();
     filterQuotes();
-    notifyUser("New quotes synced from server. Conflicts resolved in favor of server data.");
+    notifyUser("Quotes synced from mock server. Server data has been prioritized.");
   }
 }
+
 
 
 // Optional: Send local quotes to server (if needed for 2-way sync)
