@@ -220,3 +220,70 @@ function importFromJsonFile(event) {
 }
 
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
+const SERVER_URL = "https://mockapi.io/api/v1/quotes"; // Replace with your actual mock API endpoint
+
+// Sync interval (30 seconds)
+setInterval(syncWithServer, 30000);
+
+// Sync function
+async function syncWithServer() {
+  try {
+    const response = await fetch(SERVER_URL);
+    const serverQuotes = await response.json();
+
+    if (!Array.isArray(serverQuotes)) throw new Error("Invalid server response");
+
+    let updated = false;
+
+    serverQuotes.forEach(serverQuote => {
+      const existsLocally = quotes.some(
+        q => q.text === serverQuote.text && q.category === serverQuote.category
+      );
+
+      if (!existsLocally) {
+        quotes.push({
+          text: serverQuote.text,
+          category: serverQuote.category.toLowerCase()
+        });
+        updated = true;
+      }
+    });
+
+    if (updated) {
+      saveQuotes();
+      populateCategories();
+      filterQuotes();
+      notifyUser("New quotes synced from server. Conflicts resolved in favor of server data.");
+    }
+  } catch (error) {
+    console.error("Server sync failed:", error);
+  }
+}
+
+// Optional: Send local quotes to server (if needed for 2-way sync)
+async function pushLocalQuotesToServer() {
+  for (const quote of quotes) {
+    await fetch(SERVER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(quote)
+    });
+  }
+}
+
+// Notification banner
+function notifyUser(message) {
+  const notif = document.createElement("div");
+  notif.textContent = message;
+  notif.style.cssText = `
+    background: #fffae6;
+    color: #333;
+    border: 1px solid #ffc107;
+    padding: 10px;
+    margin: 10px 0;
+  `;
+  document.body.insertBefore(notif, document.body.firstChild);
+
+  setTimeout(() => notif.remove(), 5000);
+}
+
