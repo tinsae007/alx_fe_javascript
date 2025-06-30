@@ -224,41 +224,48 @@ const SERVER_URL = "https://mockapi.io/api/v1/quotes"; // Replace with your actu
 
 // Sync interval (30 seconds)
 setInterval(syncWithServer, 30000);
+async function fetchQuotesFromServer() {
+  try {
+    const response = await fetch(SERVER_URL);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const serverQuotes = await response.json();
+
+    if (!Array.isArray(serverQuotes)) throw new Error("Invalid data format from server");
+
+    return serverQuotes;
+  } catch (error) {
+    console.error("Error fetching quotes from server:", error);
+    return []; // return empty array on failure
+  }
+}
 
 // Sync function
 async function syncWithServer() {
-  try {
-    const response = await fetch(SERVER_URL);
-    const serverQuotes = await response.json();
+  const serverQuotes = await fetchQuotesFromServer();
+  let updated = false;
 
-    if (!Array.isArray(serverQuotes)) throw new Error("Invalid server response");
+  serverQuotes.forEach(serverQuote => {
+    const existsLocally = quotes.some(
+      q => q.text === serverQuote.text && q.category === serverQuote.category
+    );
 
-    let updated = false;
-
-    serverQuotes.forEach(serverQuote => {
-      const existsLocally = quotes.some(
-        q => q.text === serverQuote.text && q.category === serverQuote.category
-      );
-
-      if (!existsLocally) {
-        quotes.push({
-          text: serverQuote.text,
-          category: serverQuote.category.toLowerCase()
-        });
-        updated = true;
-      }
-    });
-
-    if (updated) {
-      saveQuotes();
-      populateCategories();
-      filterQuotes();
-      notifyUser("New quotes synced from server. Conflicts resolved in favor of server data.");
+    if (!existsLocally) {
+      quotes.push({
+        text: serverQuote.text,
+        category: serverQuote.category.toLowerCase()
+      });
+      updated = true;
     }
-  } catch (error) {
-    console.error("Server sync failed:", error);
+  });
+
+  if (updated) {
+    saveQuotes();
+    populateCategories();
+    filterQuotes();
+    notifyUser("New quotes synced from server. Conflicts resolved in favor of server data.");
   }
 }
+
 
 // Optional: Send local quotes to server (if needed for 2-way sync)
 async function pushLocalQuotesToServer() {
